@@ -36,7 +36,7 @@ class IncrementLoader:
             for change_file in change_file_list:
                 file_path, _ = change_file.rsplit("/", 1)
                 self.check_dir_exists(file_path)
-
+        
         with cal_time("Cp file to target dir"):
             for file_name in change_list:
                 try:

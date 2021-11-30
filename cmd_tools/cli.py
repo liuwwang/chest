@@ -51,7 +51,7 @@ class GitClient():
         :return:
         """
         cmd = ["git", "diff"]
-        return git.execute(cmd + list(args) + ["--stat"])
+        return git.execute(cmd + list(args) + ["--stat-width=200"])
 
     def git_commit(self, message):
         """
