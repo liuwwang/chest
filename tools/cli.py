@@ -1,12 +1,13 @@
 import os
 import fire
 
-from rich.console import Console
 from git.cmd import Git
+from rich.console import Console
 
 git = Git(os.getcwd())
 
 console = Console()
+
 
 class GitClient():
     """"""
@@ -35,8 +36,6 @@ class GitClient():
         """
         ...
 
-
-
     def git_add(self, *args, **kwargs):
         """
         git add
@@ -44,15 +43,14 @@ class GitClient():
         """
         ...
 
-    def git_diff(self, *version_no):
+    @classmethod
+    def git_diff(cls, *version_no):
         """
         git diff
         :return:
         """
         cmd = ["git", "diff"]
-        output = git.execute(cmd + list(version_no))
-        console.print(output)
-
+        return git.execute(cmd + list(version_no) + ["--stat"])
 
     def git_commit(self, *args, **kwargs):
         """
@@ -75,6 +73,6 @@ class GitClient():
         """
         ...
 
+
 if __name__ == '__main__':
     fire.Fire(GitClient)
-

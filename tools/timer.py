@@ -1,10 +1,12 @@
-import math
 import time
+from rich.console import Console
 from contextlib2 import contextmanager
+
+console = Console()
 
 
 @contextmanager
 def cal_time(name=""):
     start = time.time()
     yield
-    print(f"{name} done in {math.ceil(time.time() - start)} s", )
+    console.log(f"{name} done in {round(time.time() - start, 4)} s", )

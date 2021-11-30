@@ -1,10 +1,5 @@
-raw_file_path: "/home/liuwangwang/Desktop/work_space/daily-tools"
-new_file_path: "/home/liuwangwang/Desktop/work_space/daily-tools"
-
-select_file:
-  - "/tools/increment.py"
-  - "/tools/timer.py"
+new_file_path: "~/xxx"
 
 ignore_file_names:
   - "requirements.txt"
-  - "main.py"
+  - "README.md"

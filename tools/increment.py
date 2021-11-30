@@ -1,87 +1,71 @@
-"""
-制作本地增量包
-深度搜索目标文件夹目录
-对比目标文件与原文件是否相同，如果不同，将目标文件移入对应升级包目录中
-TIPS:
-    可能存在相同名称的文件，导致搜索的文件路径不同，搜寻目标文件时，需要填写目标文件基于项目根目录的相对路径
-    本地有可能存在改动的文件，不需要提交的，需要提前设置忽略文件，如配置文件等。
-"""
-from conf import config
-
 import os
 import fire
 import shutil
-import filecmp
-from rich import print
+import tarfile
 
-DIR_PATH = os.getcwd()
+from conf import config
+from cli import GitClient
+from timer import cal_time, console
+
+dir_path = os.getcwd()
 
 
-class UpgradeIncrementPackage(object):
+class IncrementLoader:
     """
-    制作增量升级包
+    增量制作
     """
 
-    @staticmethod
-    def deal_file_path(rf_path, nf_path, file_name):
+    def main(self, *args):
         """
-
+        主入口
         :return:
         """
-        return (rf_path + file_name, nf_path + file_name)
+        console.log("Start to Deal")
+        new_dir = config.get("new_file_path")
+        self.check_dir_exists(new_dir)
 
-    # 检测两个文件是否不同
-    @staticmethod
-    def check_file(raw_file: str, new_file: str):
-        try:
-            is_file_diff = filecmp.cmp(raw_file, new_file)
-        except Exception as e:
-            is_file_diff = False
-            print(f"cmp fail, reason:{e}")
-        return is_file_diff
+        with cal_time("Execute git diff"):
+            df_files = GitClient.git_diff(*args)
+            change_list = [i.split(" ")[1] for i in df_files.split("\n") if
+                           i.split(" ")[1] not in config.get("ignore_file_names")]
+            change_list.pop()
+            change_file_list = list((map(lambda x: new_dir + "/" + x, change_list)))
 
-    @staticmethod
-    def check_dir_or_file_exists(file_cwd):
-        """
-        检测文件夹或文件是否存在
-        :return:
-        """
-        # 递归检测
-        dir_list = file_cwd.split("/")
+        with cal_time("Check new file exists"):
+            for change_file in change_file_list:
+                file_path, _ = change_file.rsplit("/", 1)
+                self.check_dir_exists(file_path)
 
-    def main(self, split_cwd):
-        """
-        主方法入口
-        :return:
-        """
-        rf_path, nf_path, sf_path, ignore_files = config.values()
+        with cal_time("Cp file to target dir"):
+            for file_name in change_list:
+                try:
+                    shutil.copyfile(file_name, new_dir + "/" + file_name)
+                except Exception as e:
+                    if os.path.exists(file_name):
+                        console.log(f"Error log: failed to cp file, reason<{e}>")
 
-        select_path_list = [self.deal_file_path(rf_path, nf_path, _) for _ in sf_path]
-        for _ in select_path_list:
-            rf, nf = _[0], _[1]
-            is_diff = self.check_file(rf, nf)
-            if not is_diff:
-                continue
-            file_cwd, file_pwd = rf.rsplit(split_cwd, 1)
-            self.check_dir_or_file_exists(file_pwd)
+        with cal_time("Make tar package"):
+            self.make_tar("upgrade.tar", new_dir)
+
+        console.log("Make package done")
 
     @staticmethod
-    def move_file_target_dir(file_name, target_file):
+    def check_dir_exists(file_path):
         """
-        移动文件至目标文件夹下
+        检测dir是否存在
+        :param file_path:
         :return:
         """
-        shutil.move(file_name, target_file)
-        ...
+        if not os.path.exists(file_path):
+            os.makedirs(file_path)
+        return
 
-    def select_file(self, raw_file, new_file):
-        """扫描文件"""
-        ...
-
-    def make_catalogue_tree(self):
-        """扫描原文件夹，生成目录树"""
-        ...
+    @staticmethod
+    def make_tar(tar_name, source_dir):
+        with tarfile.open(tar_name, "w:gz") as tar:
+            tar.add(source_dir, arcname=os.path.basename(source_dir))
+        return
 
 
 if __name__ == '__main__':
-    fire.Fire(UpgradeIncrementPackage)
+    fire.Fire(IncrementLoader)
