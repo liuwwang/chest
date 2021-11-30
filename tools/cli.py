@@ -44,13 +44,13 @@ class GitClient():
         ...
 
     @classmethod
-    def git_diff(cls, *version_no):
+    def git_diff(cls, *args):
         """
         git diff
         :return:
         """
         cmd = ["git", "diff"]
-        return git.execute(cmd + list(version_no) + ["--stat"])
+        return git.execute(cmd + list(args) + ["--stat"])
 
     def git_commit(self, *args, **kwargs):
         """

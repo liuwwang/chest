@@ -5,7 +5,7 @@ import tarfile
 
 from conf import config
 from cli import GitClient
-from timer import cal_time, console
+from utils import cal_time, console
 
 dir_path = os.getcwd()
 
@@ -21,13 +21,14 @@ class IncrementLoader:
         :return:
         """
         console.log("Start to Deal")
-        new_dir = config.get("new_file_path")
+        new_dir = config.get("target_path")
         self.check_dir_exists(new_dir)
 
         with cal_time("Execute git diff"):
             df_files = GitClient.git_diff(*args)
+            console.log(df_files)
             change_list = [i.split(" ")[1] for i in df_files.split("\n") if
-                           i.split(" ")[1] not in config.get("ignore_file_names")]
+                           i.split(" ")[1] not in config.get("ignore_files")]
             change_list.pop()
             change_file_list = list((map(lambda x: new_dir + "/" + x, change_list)))
 

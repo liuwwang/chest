@@ -1,5 +1,4 @@
-new_file_path: "~/xxx"
+target_path: "/home/username/Desktop/xxxx"
 
-ignore_file_names:
-  - "requirements.txt"
+ignore_files:
   - "README.md"
