@@ -46,7 +46,7 @@ class IncrementLoader:
                         console.log(f"Error log: failed to cp file, reason<{e}>")
 
         with cal_time("Make tar package"):
-            self.make_tar("upgrade.tar", new_dir)
+            self.make_tar(config.get("tar_path", "upgrade.tar"), new_dir)
 
         console.log("Make package done")
 
