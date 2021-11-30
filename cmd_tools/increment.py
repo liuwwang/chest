@@ -15,22 +15,22 @@ class IncrementLoader:
     增量制作
     """
 
-    def main(self, *args):
+    def main(self, version_raw, version_new):
         """
         主入口
         :return:
         """
+        target_file = dir_path + '/cmd_tools/upgrade'
         console.log("Start to Deal")
-        new_dir = config.get("target_path")
-        self.check_dir_exists(new_dir)
+        self.check_dir_exists(target_file)
 
         with cal_time("Execute git diff"):
-            df_files = GitClient.git_diff(*args)
+            df_files = GitClient.git_diff(*(version_raw, version_new))
             console.log(df_files)
             change_list = [i.split(" ")[1] for i in df_files.split("\n") if
                            i.split(" ")[1] not in config.get("ignore_files")]
             change_list.pop()
-            change_file_list = list((map(lambda x: new_dir + "/" + x, change_list)))
+            change_file_list = list((map(lambda x: target_file + "/" + x, change_list)))
 
         with cal_time("Check new file exists"):
             for change_file in change_file_list:
@@ -40,13 +40,14 @@ class IncrementLoader:
         with cal_time("Cp file to target dir"):
             for file_name in change_list:
                 try:
-                    shutil.copyfile(file_name, new_dir + "/" + file_name)
+                    shutil.copyfile(file_name, target_file + "/" + file_name)
                 except Exception as e:
                     if os.path.exists(file_name):
                         console.log(f"Error log: failed to cp file, reason<{e}>")
 
         with cal_time("Make tar package"):
-            self.make_tar(config.get("tar_path", "upgrade.tar"), new_dir)
+            self.make_tar(config.get("tar_path", "upgrade.tar"), target_file)
+            shutil.rmtree(target_file)
 
         console.log("Make package done")
 

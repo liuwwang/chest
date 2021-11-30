@@ -1,6 +1,0 @@
-target_path: "/home/username/Desktop/xxxx"
-
-tar_path: "/home/username/Desktop/upgrade.tar"
-
-ignore_files:
-  - "README.md"
