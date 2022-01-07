@@ -1,7 +1,7 @@
 import os
 import yaml
 
-fp_config = os.getcwd() + "/cmd_tools/upgrade.yml"
+fp_config = os.getcwd() + "/package_upgrade/upgrade.yml"
 
 
 def _import_config():

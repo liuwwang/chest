@@ -20,7 +20,7 @@ class IncrementLoader:
         主入口
         :return:
         """
-        target_file = dir_path + '/cmd_tools/upgrade'
+        target_file = dir_path + '/package_upgrade/upgrade'
         console.log("Start to Deal")
         self.check_dir_exists(target_file)
 
