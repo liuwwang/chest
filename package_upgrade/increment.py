@@ -20,15 +20,18 @@ class IncrementLoader:
         主入口
         :return:
         """
-        target_file = dir_path + '/package_upgrade/upgrade'
+        target_file = dir_path + "/package_upgrade/upgrade"
         console.log("Start to Deal")
         self.check_dir_exists(target_file)
 
         with cal_time("Execute git diff"):
             df_files = GitClient.git_diff(*(version_raw, version_new))
             console.log(df_files)
-            change_list = [i.split(" ")[1] for i in df_files.split("\n") if
-                           i.split(" ")[1] not in config.get("ignore_files")]
+            change_list = [
+                i.split(" ")[1]
+                for i in df_files.split("\n")
+                if i.split(" ")[1] not in config.get("ignore_files")
+            ]
             change_list.pop()
             change_file_list = list((map(lambda x: target_file + "/" + x, change_list)))
 
@@ -36,7 +39,7 @@ class IncrementLoader:
             for change_file in change_file_list:
                 file_path, _ = change_file.rsplit("/", 1)
                 self.check_dir_exists(file_path)
-        
+
         with cal_time("Cp file to target dir"):
             for file_name in change_list:
                 try:
@@ -69,5 +72,5 @@ class IncrementLoader:
         return
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     fire.Fire(IncrementLoader)

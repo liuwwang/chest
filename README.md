@@ -4,4 +4,5 @@
 pip install pre-commit
 cd .git/hooks
 pre-commit install
+touch .pre-commit-config.yaml
 ```
