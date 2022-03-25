@@ -9,10 +9,10 @@ git = Git(os.getcwd())
 console = Console()
 
 
-class GitClient():
+class GitClient:
     """"""
-
-    def git_status(self):
+    @staticmethod
+    def git_status():
         """
         git status
         :return:
@@ -20,7 +20,8 @@ class GitClient():
         cmd = ['git', 'status']
         return git.execute(cmd)
 
-    def git_push(self, *args):
+    @staticmethod
+    def git_push(*args):
         """
         git push
         :return:
@@ -28,7 +29,8 @@ class GitClient():
         cmd = ['git', 'push']
         return git.execute(cmd + list(args))
 
-    def git_log(self):
+    @staticmethod
+    def git_log():
         """
         git log
         :return:
@@ -36,7 +38,8 @@ class GitClient():
         cmd = ['git', 'log']
         return git.execute(cmd)
 
-    def git_add(self, *args):
+    @staticmethod
+    def git_add(*args):
         """
         git add
         :return:
@@ -44,8 +47,8 @@ class GitClient():
         cmd = ['git', 'add'] + list(args)
         return git.execute(cmd)
 
-    @classmethod
-    def git_diff(cls, *args):
+    @staticmethod
+    def git_diff(*args):
         """
         git diff
         :return:
@@ -53,7 +56,8 @@ class GitClient():
         cmd = ["git", "diff"]
         return git.execute(cmd + list(args) + ["--stat-width=200"])
 
-    def git_commit(self, message):
+    @staticmethod
+    def git_commit(message):
         """
         git commit
         :return:
@@ -61,7 +65,8 @@ class GitClient():
         cmd = ['git', 'commit', '-m', message]
         return git.execute(cmd)
 
-    def git_stash(self):
+    @staticmethod
+    def git_stash():
         """
         git stash
         :return:
@@ -69,14 +74,15 @@ class GitClient():
         cmd = ['git', 'stash']
         return git.execute(cmd)
 
-
-    def git_stash_pop(self):
+    @staticmethod
+    def git_stash_pop():
         """
         git stash pop
         :return:
         """
         cmd = ['git', 'stash', 'pop']
         return git.execute(cmd)
+
 
 if __name__ == '__main__':
     fire.Fire(GitClient)
