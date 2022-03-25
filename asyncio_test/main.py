@@ -4,17 +4,18 @@
 # @email: liuwangwang@qianxin.com
 import os
 import asyncio
-import time
 import logging
 
 
 def init_logs():
     path = os.path.abspath(os.path.dirname(__file__))
-    log_file_rule = os.path.join(path, '../logs/app.log')
-    fh1 = logging.FileHandler(filename=log_file_rule, mode='a+')
-    formatter = logging.Formatter('[%(asctime)s] (%(filename)s:%(lineno)s): <%(levelname)s> %(message)s')
+    log_file_rule = os.path.join(path, "../logs/app.log")
+    fh1 = logging.FileHandler(filename=log_file_rule, mode="a+")
+    formatter = logging.Formatter(
+        "[%(asctime)s] (%(filename)s:%(lineno)s): <%(levelname)s> %(message)s"
+    )
     fh1.setFormatter(formatter)
-    logger = logging.getLogger('ASYNC')
+    logger = logging.getLogger("ASYNC")
     logger.setLevel(logging.DEBUG)
     logger.addHandler(fh1)
     return logger
@@ -24,15 +25,11 @@ logger = init_logs()
 
 
 async def task1():
-    print("xxxxxxxx, task 1")
-    logger.info("ccccccccccccccccc")
-    print(f"cccccccc task 1, {int(time.time())}")
+    logger.info("task1")
 
 
 async def task2():
-    print("xxxxxxxx, task 2")
-    logger.debug("dddddddddddddddddddd")
-    print(f"cccccccc task 2, {int(time.time())}")
+    logger.debug("task2")
 
 
 async def run():
@@ -41,11 +38,7 @@ async def run():
 
 
 async def gather_test():
-    await asyncio.gather(
-        task2(),
-        task1(),
-        task2()
-    )
+    await asyncio.gather(task2(), task1(), task2(), task2(), task1(), task2())
 
 
 async def factorial(name, number):
@@ -68,7 +61,7 @@ async def main():
     print(L)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # asyncio.run(run(), debug=True)
     # asyncio.run(gather_test(), debug=True)
     asyncio.run(main(), debug=True)
