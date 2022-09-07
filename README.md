@@ -1,8 +1,3 @@
-# daily-tools
-**代码格式化工具**
-```
-pip install pre-commit
-cd .git/hooks
-pre-commit install
-touch .pre-commit-config.yaml
-```
+#### 日常脚本
+
+- package_upgrade:git版本对比脚本生成升级包

@@ -1,6 +1,0 @@
-# 升级包目录
-tar_path: "upgrade.tar"
-
-# 忽略文件
-ignore_files:
-  - "README.md"

@@ -1,11 +1,12 @@
 import os
-import fire
 import shutil
 import tarfile
 
-from conf import config
-from cli import GitClient
-from utils import cal_time, console
+import fire
+
+from config import PackageConfig as config
+from git_cli import GitClient
+from timer import cal_time, console
 
 dir_path = os.getcwd()
 
@@ -15,13 +16,16 @@ class IncrementLoader:
     增量制作
     """
 
+    def __init__(self):
+        pass
+
     def main(self, version_raw, version_new):
         """
         主入口
         :return:
         """
         target_file = dir_path + "/package_upgrade/upgrade"
-        console.log("Start to Deal")
+        console.log("Start")
         self.check_dir_exists(target_file)
 
         with cal_time("Execute git diff"):
@@ -30,10 +34,10 @@ class IncrementLoader:
             change_list = [
                 i.split(" ")[1]
                 for i in df_files.split("\n")
-                if i.split(" ")[1] not in config.get("ignore_files")
+                if i.split(" ")[1] not in config.ignore_files
             ]
             change_list.pop()
-            change_file_list = list((map(lambda x: target_file + "/" + x, change_list)))
+            change_file_list = list(map(lambda x: target_file + "/" + x, change_list))
 
         with cal_time("Check new file exists"):
             for change_file in change_file_list:
@@ -49,7 +53,7 @@ class IncrementLoader:
                         console.log(f"Error log: failed to cp file, reason<{e}>")
 
         with cal_time("Make tar package"):
-            self.make_tar(config.get("tar_path", "upgrade.tar"), target_file)
+            self.make_tar(config.tar_path, target_file)
             shutil.rmtree(target_file)
 
         console.log("Make package done")
@@ -63,13 +67,11 @@ class IncrementLoader:
         """
         if not os.path.exists(file_path):
             os.makedirs(file_path)
-        return
 
     @staticmethod
     def make_tar(tar_name, source_dir):
         with tarfile.open(tar_name, "w:gz") as tar:
             tar.add(source_dir, arcname=os.path.basename(source_dir))
-        return
 
 
 if __name__ == "__main__":
